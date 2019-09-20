@@ -2,54 +2,56 @@
 # defaults file for aspects_elastic_beats
 aspects_elastic_beats_enabled: False
 
-aspects_elastic_beats_general_config:
-  filebeat_yml:
-    target_path: /etc/filebeat/filebeat.yml
-    beat_name: filebeat
-    configuration:
-      filebeat:
-        inputs:
-          - type: log
-            enabled: false
-            paths:
-              - /var/log/*.log
-        config:
-          modules:
-            path: ${path.config}/modules.d/*.yml
-            reload:
-              enabled: false
-      setup:
-        template:
-          settings:
-            index:
-              number_of_shards: 1
-        kibana:
-      output:
-        elasticsearch:
-          hosts: ["localhost:9200"]
-#          protocol: "http"
-#          username: "elastic"
-#          password: "password"
-      processors:
-        - add_host_metadata: ~
-        - add_cloud_metadata: ~
-#        - add_docker_metadata: ~
-#        - add_kubernetes_metadata: ~
+aspects_elastic_beats_general_config: {}
+#   filebeat_yml:
+#     target_path: /etc/filebeat/filebeat.yml
+#     beat_name: filebeat
+#     configuration:
+#       filebeat:
+#         inputs:
+#           - type: log
+#             enabled: false
+#             paths:
+#               - /var/log/*.log
+#         config:
+#           modules:
+#             path: ${path.config}/modules.d/*.yml
+#             reload:
+#               enabled: false
+#       setup:
+#         template:
+#           settings:
+#             index:
+#               number_of_shards: 1
+#         kibana:
+#       output:
+#         elasticsearch:
+#           hosts: ["localhost:9200"]
+# }
+# #          protocol: "http"
+# #          username: "elastic"
+# #          password: "password"
+#       processors:
+#         - add_host_metadata: ~
+#         - add_cloud_metadata: ~
+# #        - add_docker_metadata: ~
+# #        - add_kubernetes_metadata: ~
 
-aspects_elastic_beats_modules:
-  system:
-    target_path: /etc/filebeat/modules.d/system.yml
-    beat_name: filebeat
-    configuration:
-      - module: system
-        syslog:
-          enabled: true
-          var:
-            paths:
-              - /var/log/*
-              - /var/log/mail/*
-        auth:
-          enabled: false
+aspects_elastic_beats_modules: {}
+# system:
+#   target_path: /etc/filebeat/modules.d/system.yml
+#   beat_name: filebeat
+#   configuration:
+#     - module: system
+#       syslog:
+#         enabled: true
+#         var:
+#           paths:
+#             - /var/log/*
+#             - /var/log/mail/*
+#       auth:
+#         enabled: false
+
 
 aspects_packages_add_repo_yum_repos:
   elastic:
