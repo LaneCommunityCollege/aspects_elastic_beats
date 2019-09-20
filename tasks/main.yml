@@ -1,0 +1,7 @@
+---
+# tasks file for aspects_elastic_beats
+- name: "Include aspects_elastic_beats tasks."
+  when: aspects_elastic_beats_enabled
+  include_tasks: "init.yml"
+  tags:
+    - aspects_elastic_beats

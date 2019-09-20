@@ -1,0 +1,46 @@
+---
+- name: "Template main beats configuration."
+  template:
+    src: yaml_template.j2
+    dest: "{{ item.value.target_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ aspects_elastic_beats_general_config|dict2items }}"
+  register: inprocess_main_config_result
+  tags:
+    - aspects_elastic_beats
+
+- name: "Template beats module files."
+  template:
+    src: yaml_template.j2
+    dest: "{{ item.value.target_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ aspects_elastic_beats_modules|dict2items }}"
+  register: inprocess_module_config_result
+  tags:
+    - aspects_elastic_beats
+
+- name: "Restart services when main configuration is changed"
+  when:
+    - inprocess_main_config_result.changed
+  loop: "{{ inprocess_main_config_result.results }}"
+  service:
+    name: "{{ item.item.value.beat_name }}"
+    state: "restarted"
+    enabled: "yes"
+  tags:
+    - aspects_elastic_beats
+
+- name: "Restart services when module configuration is changed"
+  when:
+    - inprocess_module_config_result.changed
+  loop: "{{ inprocess_module_config_result.results }}"
+  service:
+    name: "{{ item.item.value.beat_name }}"
+    state: "restarted"
+    enabled: "yes"
+  tags:
+    - aspects_elastic_beats
