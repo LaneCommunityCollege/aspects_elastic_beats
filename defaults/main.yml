@@ -1,9 +1,25 @@
 ---
 # defaults file for aspects_elastic_beats
 aspects_elastic_beats_enabled: False
-
-aspects_elastic_beats_general_config: {}
+aspects_elastic_beats_global_config: {}
+#  setup.kibana:
+#    protocol: "http"
+#    host: 'kibanahost:80'
+#    path: '/kibana'
+#    username: "elastic"
+#    password: "password" # Be sure to encrypt this in git.
+#    bulk_max_size: 200
+#  setup.ilm.enabled: false
+#  output:
+#    elasticsearch:
+#      hosts: ["elastichost:9200"]
+#      protocol: "http"
+#      username: "elastic"
+#      password: "password" # Be sure to encrypt this in git.
+#      bulk_max_size: 200
+aspects_elastic_beats_beat_config: {}
 #   filebeat_yml:
+#     enabled: True
 #     target_path: /etc/filebeat/filebeat.yml
 #     beat_name: filebeat
 #     configuration:
@@ -18,27 +34,10 @@ aspects_elastic_beats_general_config: {}
 #             path: ${path.config}/modules.d/*.yml
 #             reload:
 #               enabled: false
-#       setup:
-#         template:
-#           settings:
-#             index:
-#               number_of_shards: 1
-#         kibana:
-#       output:
-#         elasticsearch:
-#           hosts: ["localhost:9200"]
-# }
-# #          protocol: "http"
-# #          username: "elastic"
-# #          password: "password"
-#       processors:
-#         - add_host_metadata: ~
-#         - add_cloud_metadata: ~
-# #        - add_docker_metadata: ~
-# #        - add_kubernetes_metadata: ~
 
 aspects_elastic_beats_modules: {}
 # system:
+#   enabled: True
 #   target_path: /etc/filebeat/modules.d/system.yml
 #   beat_name: filebeat
 #   configuration:
@@ -53,22 +52,3 @@ aspects_elastic_beats_modules: {}
 #         enabled: false
 
 
-aspects_packages_add_repo_yum_repos:
-  elastic:
-    state: "present"
-    name: "Elastic"
-    description: "Elastic"
-    gpgkey: "https://packages.elastic.co/GPG-KEY-elasticsearch"
-    baseurl: "https://artifacts.elastic.co/packages/7.x/yum"
-    sslverify: "yes"
-    repo_gpgcheck: "yes"
-    gpgcheck: "yes"
-    enabled: "no"
-    sslcacert: "/etc/ssl/certs/ca-bundle.crt"
-    metadata_expire: "300"
-
-aspects_packages_add_repo_apt_repos:
-  elastic:
-    enabled: False
-    key_url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
-    repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
