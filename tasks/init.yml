@@ -1,5 +1,6 @@
 ---
 - name: "Template beat configuration."
+  when: item.value.enabled
   template:
     src: yaml_template_beat.j2
     dest: "{{ item.value.target_path }}"
@@ -12,6 +13,7 @@
     - aspects_elastic_beats
 
 - name: "Template beats module files."
+  when: item.value.enabled
   template:
     src: yaml_template_modules.j2
     dest: "{{ item.value.target_path }}"
@@ -25,6 +27,7 @@
 
 - name: "Restart services when main configuration is changed"
   when:
+    - item.item.value.enabled
     - inprocess_main_config_result.changed
   loop: "{{ inprocess_main_config_result.results }}"
   service:
@@ -36,6 +39,7 @@
 
 - name: "Restart services when module configuration is changed"
   when:
+    - item.item.value.enabled
     - inprocess_module_config_result.changed
   loop: "{{ inprocess_module_config_result.results }}"
   service:
