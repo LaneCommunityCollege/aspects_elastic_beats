@@ -1,2 +1,2 @@
-{% if item.value.enabled %}{{ item.value.configuration | to_nice_yaml(indent=2, width=1337) }}{% endif %}
+{% if item.1.enabled %}{{ item.1.configuration | to_nice_yaml(indent=2, width=1337) }}{% endif %}
 {% if aspects_elastic_beats_global_config.enabled %}{{ aspects_elastic_beats_global_config.configuration | to_nice_yaml(indent=2, width=1337) }}{% endif %}

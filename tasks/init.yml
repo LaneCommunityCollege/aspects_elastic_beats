@@ -2,11 +2,11 @@
 - name: "Template beat configuration."
   template:
     src: yaml_template_beat.j2
-    dest: "{{ item.value.target_path }}"
+    dest: "{{ item.1.target_path }}"
     owner: root
     group: root
     mode: "0644"
-  loop: "{{ aspects_elastic_beats_beat_config|dict2items }}"
+  loop: "{{ aspects_elastic_beats_beat_config | default({}) | dictsort }}"
   register: inprocess_main_config_result
   tags:
     - aspects_elastic_beats
@@ -14,21 +14,21 @@
 - name: "Template beats module files."
   template:
     src: yaml_template_modules.j2
-    dest: "{{ item.value.target_path }}"
+    dest: "{{ item.1.target_path }}"
     owner: root
     group: root
     mode: "0644"
-  loop: "{{ aspects_elastic_beats_modules|dict2items }}"
+  loop: "{{ aspects_elastic_beats_modules | default({}) | dictsort }}"
   register: inprocess_module_config_result
   tags:
     - aspects_elastic_beats
 
 - name: "Restart services when main configuration is changed"
   when:
-    - inprocess_main_config_result.changed
+    - item.changed
   loop: "{{ inprocess_main_config_result.results }}"
   service:
-    name: "{{ item.item.value.beat_name }}"
+    name: "{{ item.item.1.beat_name }}"
     state: "restarted"
     enabled: "yes"
   tags:
@@ -36,10 +36,10 @@
 
 - name: "Restart services when module configuration is changed"
   when:
-    - inprocess_module_config_result.changed
+    - item.changed
   loop: "{{ inprocess_module_config_result.results }}"
   service:
-    name: "{{ item.item.value.beat_name }}"
+    name: "{{ item.item.1.beat_name }}"
     state: "restarted"
     enabled: "yes"
   tags:

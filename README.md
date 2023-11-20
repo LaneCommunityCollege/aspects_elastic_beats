@@ -2,33 +2,34 @@
 
 Configure Elastic.co's Beats metric and log shippers.
 
+> NOTE (2023-10-16): We're starting to use this role again, but it is still out of date.
+
 # Requirements
 
 Set `hash_behaviour=merge` in your ansible.cfg file.
 
-Either use `aspects_packages` to install the Elastic.co yum or apt repo, and `aspects_packages_packages` to install the beats you wish to use from said repo's, or install the beats via another method.
+Either use `aspects_packages` to install the Elastic.co yum or apt repo, and `aspects_packages_packages` to install the
+beats you wish to use from said repo's, or install the beats via another method.
+
 ## Using `aspects_packages` to install the packages and repos
+
 ```yaml
 aspects_packages_enabled: True
-aspects_packages_add_repo_yum_repos:
-  elastic:
-    state: "present"
-    name: "Elastic"
-    description: "Elastic"
-    gpgkey: "https://packages.elastic.co/GPG-KEY-elasticsearch"
-    baseurl: "https://artifacts.elastic.co/packages/7.x/yum"
-    sslverify: "yes"
-    repo_gpgcheck: "yes"
-    gpgcheck: "yes"
-    enabled: "yes"
-    sslcacert: "/etc/ssl/certs/ca-bundle.crt"
-    metadata_expire: "300"
+
+aspects_packages_add_repo_apt_keys:
+  elasticsearch8:
+    enabled: True
+    Ubuntu:
+      2204:
+        key_url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
+        key_dest: "/etc/apt/keyrings/elasticsearch8.asc"
 
 aspects_packages_add_repo_apt_repos:
-  elastic:
+  elasticsearch8:
     enabled: True
-    key_url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
-    repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+    repo:
+      Ubuntu:
+        2204: "deb [arch=amd64 signed-by=/etc/apt/keyrings/elasticsearch8.asc]  https://artifacts.elastic.co/packages/8.x/apt stable main"
 
 aspects_packages_packages:
   filebeat:
@@ -65,17 +66,23 @@ aspects_packages_packages:
     Debian:
       9: "journalbeat"
 ```
+
 # Role Variables
+
 ## aspects_elastic_beats_enabled
+
 To enable or disable this role. Set to True to enable. False to disable.
 
 Default is `False`
+
 ## aspects_elastic_beats_global_config
-A dictionary of yaml data for settings that apply across all beats. For example, the `output.elasticsearch` or `setup.kibana`
-sections. 
+
+A dictionary of yaml data for settings that apply across all beats. For example, the `output.elasticsearch`
+or `setup.kibana`
+sections.
 
 The template uses the `to_nice_yaml` Jinja filter to insert the straight yaml configuration at the end of each
-beat's main configuration file. 
+beat's main configuration file.
 
 Follow this pattern:
 
@@ -87,9 +94,10 @@ aspects_elastic_beats_global_config:
 ```
 
 ## aspects_elastic_beats_beat_config
+
 A dictionary of yaml configuration for the main `*beat.yml` configuration files.
 
-The template uses the `to_nice_yaml` Jinja filter to insert the straight yaml configuration into the target file. 
+The template uses the `to_nice_yaml` Jinja filter to insert the straight yaml configuration into the target file.
 
 Follow this pattern:
 
@@ -110,9 +118,10 @@ aspects_elastic_beats_beat_config:
 ```
 
 ## aspects_elastic_beats_modules
+
 A dictionary of yaml configuration for the main `/etc/*beat/modules.d/<module>.yml` configuration files.
 
-The template uses the `to_nice_yaml` Jinja filter to insert the straight yaml configuration into the target file. 
+The template uses the `to_nice_yaml` Jinja filter to insert the straight yaml configuration into the target file.
 
 Follow this pattern:
 
@@ -132,12 +141,12 @@ aspects_elastic_beats_modules:
       <the module config in yaml format>
 ```
 
-
 # Example Playbook
+
 ```yaml
 - hosts: servers
   roles:
-     - aspects_elastic_beats
+    - aspects_elastic_beats
   vars:
     aspects_elastic_beats_enabled: True
     aspects_elastic_beats_global_config:
@@ -151,10 +160,10 @@ aspects_elastic_beats_modules:
           kibana:
         output:
           elasticsearch:
-            hosts: ["localhost:9200"]
+            hosts: [ "localhost:9200" ]
             protocol: "http"
             username: "elastic"
-            password: "password"      
+            password: "password"
     aspects_elastic_beats_beat_config:
       filebeat_yml:
         enabled: True
@@ -188,5 +197,7 @@ aspects_elastic_beats_modules:
               auth:
                 enabled: false
 ```
+
 # License
+
 MIT
