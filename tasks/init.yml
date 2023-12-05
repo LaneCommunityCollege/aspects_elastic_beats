@@ -10,6 +10,7 @@
     - aspects_elastic_beats
 
 - name: "Template beat configuration."
+  when: item.1.enabled
   template:
     src: yaml_template_beat.j2
     dest: "{{ item.1.target_path }}"
@@ -22,6 +23,7 @@
     - aspects_elastic_beats
 
 - name: "Template beats module files."
+  when: item.1.enabled
   template:
     src: yaml_template_modules.j2
     dest: "{{ item.1.target_path }}"
