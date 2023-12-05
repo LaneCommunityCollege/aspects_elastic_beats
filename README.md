@@ -141,6 +141,13 @@ aspects_elastic_beats_modules:
       <the module config in yaml format>
 ```
 
+> Note: You can use this to template `inputs.d` files as well.
+
+# Use Config Reloading
+
+For changes to `modules.d/*.yml` and `inputs.d/*.yml` files, this role now assumes you are using config reloading. It
+will NOT restart the beat for changes in those files. It WILL restart for changes to the main config file.
+
 # Example Playbook
 
 ```yaml

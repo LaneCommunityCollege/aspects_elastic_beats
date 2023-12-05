@@ -1,4 +1,14 @@
 ---
+- name: "Make sure /etc/filebeat/inputs.d exists"
+  file:
+    path: /etc/filebeat/inputs.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags:
+    - aspects_elastic_beats
+
 - name: "Template beat configuration."
   template:
     src: yaml_template_beat.j2
@@ -27,17 +37,6 @@
   when:
     - item.changed
   loop: "{{ inprocess_main_config_result.results }}"
-  service:
-    name: "{{ item.item.1.beat_name }}"
-    state: "restarted"
-    enabled: "yes"
-  tags:
-    - aspects_elastic_beats
-
-- name: "Restart services when module configuration is changed"
-  when:
-    - item.changed
-  loop: "{{ inprocess_module_config_result.results }}"
   service:
     name: "{{ item.item.1.beat_name }}"
     state: "restarted"
